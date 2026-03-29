@@ -1,0 +1,40 @@
+# =============================================================================
+# .dockerignore — Exclude from Docker build context
+# =============================================================================
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Documentation (not needed in container)
+essential_docs/
+*.pdf
+Dockerfile.txt
+
+# Python caches
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+
+# Node (if any)
+node_modules
+
+# Env
+.env.local
+.env.*.local
+
+# Gemini agent data
+.gemini

@@ -1,0 +1,90 @@
+# =============================================================================
+# docker-compose.yml — Expense Management System (Odoo 19)
+# =============================================================================
+# Three-service stack:
+#   1. PostgreSQL 16   — Database backend
+#   2. Odoo 19         — Application server + expense_management module
+#   3. DocStrange      — OCR receipt scanner (CPU/cloud mode)
+#
+# Quick start:
+#   docker compose up -d --build
+#   Odoo:       http://localhost:8080
+#   DocStrange: http://localhost:5000
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 — Database backend
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16
+    container_name: expense_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_expense_2026
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # Odoo 19 — Application server (mapped to host port 8080)
+  # ---------------------------------------------------------------------------
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expense_odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8069"
+      - "8072:8072"
+    environment:
+      - HOST=db
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=odoo_expense_2026
+      - DOCSTRANGE_URL=http://docstrange:5000
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./reimbursement_mgt_system/expense_management:/mnt/extra-addons/expense_management
+
+  # ---------------------------------------------------------------------------
+  # DocStrange — OCR Service (mapped to host port 5000)
+  # ---------------------------------------------------------------------------
+  docstrange:
+    build:
+      context: ./docstrange
+      dockerfile: Dockerfile
+    container_name: docstrange_ocr
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./docstrange_models:/root/.cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# ---------------------------------------------------------------------------
+# Named volumes for data persistence
+# ---------------------------------------------------------------------------
+volumes:
+  pgdata:
+    driver: local
+  odoo_data:
+    driver: local

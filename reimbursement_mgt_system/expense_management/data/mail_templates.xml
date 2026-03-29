@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ==================== EXPENSE SUBMITTED ==================== -->
+        <record id="email_template_expense_submitted" model="mail.template">
+            <field name="name">Expense: Submitted for Approval</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="email_from">{{ (object.company_id.admin_user_id.email or user.email) }}</field>
+            <field name="email_to">{{ object.current_approver_id.email }}</field>
+            <field name="subject">🧾 Expense Approval Required: {{ object.name }}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;">
+    <table width="600" cellpadding="0" cellspacing="0" style="margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+        <!-- Header -->
+        <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px 30px;">
+                <h2 style="color: #ffffff; margin: 0; font-size: 20px;">🧾 Expense Approval Required</h2>
+            </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+            <td style="padding: 30px; background: #ffffff;">
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">
+                    Hi <strong>{{ object.current_approver_id.name }}</strong>,
+                </p>
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
+                    A new expense claim has been submitted and requires your approval:
+                </p>
+                <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #eee; border-radius: 6px; margin-bottom: 20px;">
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555; width: 40%;">Reference</td>
+                        <td style="color: #333;">{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #555;">Employee</td>
+                        <td style="color: #333;">{{ object.employee_id.name }}</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555;">Amount</td>
+                        <td style="color: #333; font-weight: 700;">{{ object.amount_original }} {{ object.currency_original }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #555;">Category</td>
+                        <td style="color: #333;">{{ object.category }}</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555;">Date</td>
+                        <td style="color: #333;">{{ object.expense_date }}</td>
+                    </tr>
+                    <tr t-if="object.policy_violation">
+                        <td style="font-weight: 600; color: #d32f2f;">⚠️ Policy Warning</td>
+                        <td style="color: #d32f2f;">{{ object.policy_warning }}</td>
+                    </tr>
+                </table>
+                <p style="color: #666; font-size: 13px; margin: 0;">
+                    Please log in to review and approve or reject this expense.
+                </p>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td style="background: #f5f5f5; padding: 16px 30px; text-align: center;">
+                <p style="color: #999; font-size: 12px; margin: 0;">
+                    Expense Management System — {{ object.company_id.name or 'Your Company' }}
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+            <field name="lang">{{ object.current_approver_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- ==================== EXPENSE APPROVED ==================== -->
+        <record id="email_template_expense_approved" model="mail.template">
+            <field name="name">Expense: Approved</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="email_from">{{ (object.company_id.admin_user_id.email or user.email) }}</field>
+            <field name="email_to">{{ object.employee_id.email }}</field>
+            <field name="subject">✅ Expense Approved: {{ object.name }}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;">
+    <table width="600" cellpadding="0" cellspacing="0" style="margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+        <tr>
+            <td style="background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%); padding: 24px 30px;">
+                <h2 style="color: #ffffff; margin: 0; font-size: 20px;">✅ Expense Approved</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px; background: #ffffff;">
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">
+                    Hi <strong>{{ object.employee_id.name }}</strong>,
+                </p>
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
+                    Great news! Your expense claim has been <strong style="color: #43a047;">fully approved</strong>.
+                </p>
+                <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #eee; border-radius: 6px; margin-bottom: 20px;">
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555; width: 40%;">Reference</td>
+                        <td style="color: #333;">{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #555;">Amount</td>
+                        <td style="color: #333; font-weight: 700;">{{ object.amount_original }} {{ object.currency_original }}</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;" t-if="object.amount_converted != object.amount_original">
+                        <td style="font-weight: 600; color: #555;">Converted Amount</td>
+                        <td style="color: #333;">{{ object.amount_converted }} {{ object.company_currency }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #555;">Category</td>
+                        <td style="color: #333;">{{ object.category }}</td>
+                    </tr>
+                </table>
+                <p style="color: #666; font-size: 13px; margin: 0;">
+                    The reimbursement will be processed as per company policy.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="background: #f5f5f5; padding: 16px 30px; text-align: center;">
+                <p style="color: #999; font-size: 12px; margin: 0;">
+                    Expense Management System — {{ object.company_id.name or 'Your Company' }}
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+            <field name="lang">{{ object.employee_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- ==================== EXPENSE REJECTED ==================== -->
+        <record id="email_template_expense_rejected" model="mail.template">
+            <field name="name">Expense: Rejected</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="email_from">{{ (object.company_id.admin_user_id.email or user.email) }}</field>
+            <field name="email_to">{{ object.employee_id.email }}</field>
+            <field name="subject">❌ Expense Rejected: {{ object.name }}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;">
+    <table width="600" cellpadding="0" cellspacing="0" style="margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+        <tr>
+            <td style="background: linear-gradient(135deg, #e53935 0%, #ef5350 100%); padding: 24px 30px;">
+                <h2 style="color: #ffffff; margin: 0; font-size: 20px;">❌ Expense Rejected</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px; background: #ffffff;">
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">
+                    Hi <strong>{{ object.employee_id.name }}</strong>,
+                </p>
+                <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
+                    Unfortunately, your expense claim has been <strong style="color: #e53935;">rejected</strong>.
+                </p>
+                <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #eee; border-radius: 6px; margin-bottom: 20px;">
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555; width: 40%;">Reference</td>
+                        <td style="color: #333;">{{ object.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #555;">Amount</td>
+                        <td style="color: #333;">{{ object.amount_original }} {{ object.currency_original }}</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="font-weight: 600; color: #555;">Category</td>
+                        <td style="color: #333;">{{ object.category }}</td>
+                    </tr>
+                </table>
+                <p style="color: #666; font-size: 14px; margin: 0 0 10px;">
+                    You can review the rejection reason in your expense history and resubmit
+                    after making the necessary corrections by clicking "Reset to Draft".
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="background: #f5f5f5; padding: 16px 30px; text-align: center;">
+                <p style="color: #999; font-size: 12px; margin: 0;">
+                    Expense Management System — {{ object.company_id.name or 'Your Company' }}
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+            <field name="lang">{{ object.employee_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

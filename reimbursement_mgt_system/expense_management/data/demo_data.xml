@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ==================== DEMO COMPANY ==================== -->
+        <record id="demo_company_india" model="expense.company">
+            <field name="name">TechCorp India Pvt. Ltd.</field>
+            <field name="country">India</field>
+            <field name="currency_code">INR</field>
+            <field name="currency_symbol">₹</field>
+        </record>
+
+        <!-- ==================== DEMO USERS ==================== -->
+
+        <!-- Admin User -->
+        <record id="demo_user_admin" model="res.users">
+            <field name="name">Priya Sharma (Admin)</field>
+            <field name="login">admin_priya@techcorp.com</field>
+            <field name="email">admin_priya@techcorp.com</field>
+            <field name="expense_company_id" ref="demo_company_india"/>
+            <field name="expense_role">admin</field>
+            <field name="group_ids" eval="[(4, ref('group_expense_admin'))]"/>
+        </record>
+
+        <!-- Manager User -->
+        <record id="demo_user_manager" model="res.users">
+            <field name="name">Rahul Verma (Manager)</field>
+            <field name="login">manager_rahul@techcorp.com</field>
+            <field name="email">manager_rahul@techcorp.com</field>
+            <field name="expense_company_id" ref="demo_company_india"/>
+            <field name="expense_role">manager</field>
+            <field name="expense_manager_id" ref="demo_user_admin"/>
+            <field name="group_ids" eval="[(4, ref('group_expense_manager'))]"/>
+        </record>
+
+        <!-- Finance Manager -->
+        <record id="demo_user_finance" model="res.users">
+            <field name="name">Anita Desai (Finance)</field>
+            <field name="login">finance_anita@techcorp.com</field>
+            <field name="email">finance_anita@techcorp.com</field>
+            <field name="expense_company_id" ref="demo_company_india"/>
+            <field name="expense_role">manager</field>
+            <field name="expense_manager_id" ref="demo_user_admin"/>
+            <field name="group_ids" eval="[(4, ref('group_expense_manager'))]"/>
+        </record>
+
+        <!-- Employee User 1 -->
+        <record id="demo_user_employee1" model="res.users">
+            <field name="name">Amit Kumar (Employee)</field>
+            <field name="login">employee_amit@techcorp.com</field>
+            <field name="email">employee_amit@techcorp.com</field>
+            <field name="expense_company_id" ref="demo_company_india"/>
+            <field name="expense_role">employee</field>
+            <field name="expense_manager_id" ref="demo_user_manager"/>
+            <field name="is_manager_approver" eval="True"/>
+            <field name="group_ids" eval="[(4, ref('group_expense_employee'))]"/>
+        </record>
+
+        <!-- Employee User 2 -->
+        <record id="demo_user_employee2" model="res.users">
+            <field name="name">Neha Patel (Employee)</field>
+            <field name="login">employee_neha@techcorp.com</field>
+            <field name="email">employee_neha@techcorp.com</field>
+            <field name="expense_company_id" ref="demo_company_india"/>
+            <field name="expense_role">employee</field>
+            <field name="expense_manager_id" ref="demo_user_manager"/>
+            <field name="is_manager_approver" eval="True"/>
+            <field name="group_ids" eval="[(4, ref('group_expense_employee'))]"/>
+        </record>
+
+        <!-- Update company admin -->
+        <record id="demo_company_india" model="expense.company">
+            <field name="admin_user_id" ref="demo_user_admin"/>
+        </record>
+
+        <!-- ==================== DEMO WORKFLOW: Sequential ==================== -->
+        <record id="demo_workflow_sequential" model="approval.workflow">
+            <field name="name">Standard 3-Level Approval</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="rule_type">sequential</field>
+            <field name="is_manager_first" eval="True"/>
+            <field name="description">Manager → Finance → Admin sequential approval chain.</field>
+        </record>
+
+        <record id="demo_step_finance" model="workflow.step">
+            <field name="workflow_id" ref="demo_workflow_sequential"/>
+            <field name="sequence">10</field>
+            <field name="name">Finance Review</field>
+            <field name="approver_type">specific_user</field>
+            <field name="approver_ids" eval="[(6, 0, [ref('demo_user_finance')])]"/>
+        </record>
+
+        <record id="demo_step_admin" model="workflow.step">
+            <field name="workflow_id" ref="demo_workflow_sequential"/>
+            <field name="sequence">20</field>
+            <field name="name">Admin Final Approval</field>
+            <field name="approver_type">specific_user</field>
+            <field name="approver_ids" eval="[(6, 0, [ref('demo_user_admin')])]"/>
+        </record>
+
+        <!-- ==================== DEMO WORKFLOW: Percentage ==================== -->
+        <record id="demo_workflow_percentage" model="approval.workflow">
+            <field name="name">60% Majority Approval</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="rule_type">percentage</field>
+            <field name="percentage_threshold">60.0</field>
+            <field name="is_manager_first" eval="False"/>
+            <field name="active" eval="False"/>
+            <field name="description">Expense approved when 60% of assigned approvers approve. No manager step.</field>
+        </record>
+
+        <record id="demo_step_pct_1" model="workflow.step">
+            <field name="workflow_id" ref="demo_workflow_percentage"/>
+            <field name="sequence">10</field>
+            <field name="name">Committee Review</field>
+            <field name="approver_type">specific_user</field>
+            <field name="approver_ids" eval="[(6, 0, [ref('demo_user_manager'), ref('demo_user_finance'), ref('demo_user_admin')])]"/>
+        </record>
+
+        <!-- ==================== DEMO WORKFLOW: Hybrid ==================== -->
+        <record id="demo_workflow_hybrid" model="approval.workflow">
+            <field name="name">Hybrid: 50% or CFO Override</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="rule_type">hybrid</field>
+            <field name="percentage_threshold">50.0</field>
+            <field name="specific_approver_id" ref="demo_user_admin"/>
+            <field name="is_manager_first" eval="False"/>
+            <field name="active" eval="False"/>
+            <field name="description">Approved if 50% of approvers agree OR the Admin (CFO) approves at any step.</field>
+        </record>
+
+        <record id="demo_step_hybrid_1" model="workflow.step">
+            <field name="workflow_id" ref="demo_workflow_hybrid"/>
+            <field name="sequence">10</field>
+            <field name="name">Review Panel</field>
+            <field name="approver_type">specific_user</field>
+            <field name="approver_ids" eval="[(6, 0, [ref('demo_user_manager'), ref('demo_user_finance'), ref('demo_user_admin')])]"/>
+        </record>
+
+        <!-- ==================== DEMO EXPENSE POLICIES ==================== -->
+
+        <record id="demo_policy_meals" model="expense.policy">
+            <field name="name">Meals: Max ₹5,000 per claim</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="category">meals</field>
+            <field name="max_amount">5000</field>
+            <field name="require_receipt" eval="True"/>
+            <field name="receipt_threshold">500</field>
+            <field name="description">Meal expenses cannot exceed ₹5,000 per claim. Receipts required for amounts above ₹500.</field>
+        </record>
+
+        <record id="demo_policy_travel" model="expense.policy">
+            <field name="name">Travel: Max ₹50,000 per claim</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="category">travel</field>
+            <field name="max_amount">50000</field>
+            <field name="require_receipt" eval="True"/>
+            <field name="receipt_threshold">0</field>
+            <field name="description">Travel expenses up to ₹50,000. Receipts always required.</field>
+        </record>
+
+        <record id="demo_policy_accommodation" model="expense.policy">
+            <field name="name">Accommodation: Max ₹15,000 per night</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="category">accommodation</field>
+            <field name="max_amount">15000</field>
+            <field name="require_receipt" eval="True"/>
+            <field name="receipt_threshold">0</field>
+            <field name="description">Hotel/accommodation limit is ₹15,000. Receipts always required.</field>
+        </record>
+
+        <record id="demo_policy_transport" model="expense.policy">
+            <field name="name">Transport: Max ₹3,000 per claim</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="category">transport</field>
+            <field name="max_amount">3000</field>
+            <field name="require_receipt" eval="False"/>
+            <field name="description">Local transport (taxi, cab, auto) up to ₹3,000. Receipts optional.</field>
+        </record>
+
+        <record id="demo_policy_miscellaneous" model="expense.policy">
+            <field name="name">Miscellaneous: Max ₹2,000 per claim</field>
+            <field name="company_id" ref="demo_company_india"/>
+            <field name="category">miscellaneous</field>
+            <field name="max_amount">2000</field>
+            <field name="require_receipt" eval="True"/>
+            <field name="receipt_threshold">200</field>
+            <field name="description">Miscellaneous expenses up to ₹2,000. Receipts required above ₹200.</field>
+        </record>
+
+        <!-- ==================== DEMO EXPENSES ==================== -->
+
+        <record id="demo_expense_1" model="expense.claim">
+            <field name="employee_id" ref="demo_user_employee1"/>
+            <field name="amount_original">1250.00</field>
+            <field name="currency_original">INR</field>
+            <field name="amount_converted">1250.00</field>
+            <field name="company_currency">INR</field>
+            <field name="exchange_rate">1.0</field>
+            <field name="category">meals</field>
+            <field name="description">Team lunch at Taj Restaurant for project kickoff meeting.</field>
+            <field name="expense_date">2026-03-20</field>
+            <field name="status">draft</field>
+        </record>
+
+        <record id="demo_expense_2" model="expense.claim">
+            <field name="employee_id" ref="demo_user_employee1"/>
+            <field name="amount_original">4500.00</field>
+            <field name="currency_original">INR</field>
+            <field name="amount_converted">4500.00</field>
+            <field name="company_currency">INR</field>
+            <field name="exchange_rate">1.0</field>
+            <field name="category">transport</field>
+            <field name="description">Ola cab rides for client visits (Delhi-Gurgaon round trips).</field>
+            <field name="expense_date">2026-03-22</field>
+            <field name="status">draft</field>
+        </record>
+
+        <record id="demo_expense_3" model="expense.claim">
+            <field name="employee_id" ref="demo_user_employee2"/>
+            <field name="amount_original">850.00</field>
+            <field name="currency_original">INR</field>
+            <field name="amount_converted">850.00</field>
+            <field name="company_currency">INR</field>
+            <field name="exchange_rate">1.0</field>
+            <field name="category">office_supplies</field>
+            <field name="description">Printer cartridges and A4 paper for Q2 reports.</field>
+            <field name="expense_date">2026-03-25</field>
+            <field name="status">draft</field>
+        </record>
+
+    </data>
+</odoo>

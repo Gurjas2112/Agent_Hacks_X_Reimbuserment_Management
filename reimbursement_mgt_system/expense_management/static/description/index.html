@@ -1,0 +1,125 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h2 class="oe_slogan" style="color: #667eea;">
+                Expense Management — Reimbursement System
+            </h2>
+            <h3 class="oe_slogan" style="font-size: 18px; color: #666;">
+                Configurable approval workflows • OCR receipt scanning • Multi-currency conversion
+            </h3>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h3 style="color: #764ba2;">🚀 Key Features</h3>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span6">
+            <h4>🔄 Configurable Approval Workflows</h4>
+            <p>Four powerful approval modes:</p>
+            <ul>
+                <li><strong>Sequential</strong> — Step-by-step approval chain</li>
+                <li><strong>Percentage</strong> — Threshold-based (e.g., 60% of approvers must approve)</li>
+                <li><strong>Specific Approver</strong> — Auto-approve when a designated person (CFO) approves</li>
+                <li><strong>Hybrid</strong> — Percentage OR specific approver — whichever triggers first</li>
+            </ul>
+            <p>Optional "Manager First" step auto-inserts the employee's manager as Step 0.</p>
+        </div>
+        <div class="oe_span6">
+            <h4>🔍 OCR Receipt Scanning</h4>
+            <p>Upload a receipt image and let AI extract structured data:</p>
+            <ul>
+                <li>Vendor name, address, GST number</li>
+                <li>Transaction date and invoice number</li>
+                <li>Amounts (subtotal, tax, total) with currency detection</li>
+                <li>Line items auto-populated</li>
+                <li>Category auto-guessed from receipt content</li>
+            </ul>
+            <p>Powered by <strong>DocStrange</strong> cloud OCR with regex fallback.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span6">
+            <h4>💱 Multi-Currency Support</h4>
+            <p>Submit expenses in any currency:</p>
+            <ul>
+                <li>Automatic conversion to company currency using ExchangeRate API v6</li>
+                <li>Real-time exchange rates with session caching</li>
+                <li>Country-to-currency auto-mapping from 250+ countries</li>
+                <li>Exchange rate recorded for audit trail</li>
+            </ul>
+        </div>
+        <div class="oe_span6">
+            <h4>📋 Expense Policies</h4>
+            <p>Enforce corporate spending rules:</p>
+            <ul>
+                <li>Per-category maximum spending limits</li>
+                <li>Receipt requirements with configurable thresholds</li>
+                <li>Policy violation flags visible to approvers</li>
+                <li>Flexible per-company policy configuration</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span6">
+            <h4>📊 Analytics & Reports</h4>
+            <ul>
+                <li>Pivot table analysis by category, employee, time period</li>
+                <li>Graph/chart views for expense distribution</li>
+                <li>Monthly spending trend analysis</li>
+                <li>Full audit log with approval history</li>
+            </ul>
+        </div>
+        <div class="oe_span6">
+            <h4>👥 Role-Based Access</h4>
+            <ul>
+                <li><strong>Employee</strong> — Submit expenses, view own history</li>
+                <li><strong>Manager</strong> — Approve/reject team expenses, view reports</li>
+                <li><strong>Admin</strong> — Full access: configure workflows, policies, users</li>
+            </ul>
+            <p>Cascading security groups with implied permissions.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h4>📧 Email Notifications</h4>
+            <p>Automated HTML email notifications for:</p>
+            <ul>
+                <li>New expense submitted — notification to approver</li>
+                <li>Expense approved — confirmation to employee</li>
+                <li>Expense rejected — notification to employee with guidance</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h3 style="color: #764ba2;">📦 Technical Details</h3>
+            <table class="table table-bordered">
+                <tr><td><strong>Version</strong></td><td>19.0.1.1.0</td></tr>
+                <tr><td><strong>Category</strong></td><td>Accounting / Expenses</td></tr>
+                <tr><td><strong>Dependencies</strong></td><td>base, mail, contacts</td></tr>
+                <tr><td><strong>Python Deps</strong></td><td>requests</td></tr>
+                <tr><td><strong>License</strong></td><td>LGPL-3</td></tr>
+            </table>
+        </div>
+    </div>
+</section>

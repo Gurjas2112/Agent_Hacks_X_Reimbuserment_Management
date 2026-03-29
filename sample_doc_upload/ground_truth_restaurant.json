@@ -1,0 +1,56 @@
+{
+  "vendor": {
+    "name": "The Golden Spoon",
+    "gst_number": "27AABCU9603R1ZM",
+    "address": "42 Park Street, Mumbai 400001"
+  },
+  "transaction": {
+    "date": "2026-03-15",
+    "time": "19:45",
+    "invoice_number": "GS-2024-1847"
+  },
+  "amounts": {
+    "subtotal": 1220.00,
+    "tax": 61.00,
+    "total": 1281.00,
+    "currency": "INR"
+  },
+  "line_items": [
+    {
+      "name": "Butter Chicken Masala",
+      "quantity": 1,
+      "unit_price": 450.00,
+      "total_price": 450.00
+    },
+    {
+      "name": "Garlic Naan",
+      "quantity": 2,
+      "unit_price": 60.00,
+      "total_price": 120.00
+    },
+    {
+      "name": "Dal Makhani",
+      "quantity": 1,
+      "unit_price": 320.00,
+      "total_price": 320.00
+    },
+    {
+      "name": "Mango Lassi",
+      "quantity": 2,
+      "unit_price": 90.00,
+      "total_price": 180.00
+    },
+    {
+      "name": "Gulab Jamun",
+      "quantity": 1,
+      "unit_price": 150.00,
+      "total_price": 150.00
+    }
+  ],
+  "payment": {
+    "method": "Visa",
+    "last4_digits": "4523"
+  },
+  "category": "meals",
+  "confidence_score": 95
+}

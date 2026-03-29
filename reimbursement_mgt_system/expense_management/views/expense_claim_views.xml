@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== FORM VIEW ==================== -->
+    <record id="expense_claim_view_form" model="ir.ui.view">
+        <field name="name">expense.claim.form</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <form string="Expense Claim">
+                <header>
+                    <!-- Action buttons with role/status-based visibility -->
+                    <button name="action_scan_receipt" type="object"
+                            string="🔍 Scan Receipt" class="btn-secondary"
+                            invisible="status != 'draft' or not receipt"/>
+                    <button name="action_submit" type="object"
+                            string="Submit for Approval" class="btn-primary"
+                            invisible="status != 'draft'"
+                            confirm="Are you sure you want to submit this expense for approval?"/>
+                    <button name="action_approve" type="object"
+                            string="✅ Approve" class="btn-success"
+                            invisible="status != 'pending'"
+                            groups="expense_management.group_expense_manager"/>
+                    <button name="action_reject" type="object"
+                            string="❌ Reject" class="btn-danger"
+                            invisible="status != 'pending'"
+                            groups="expense_management.group_expense_manager"
+                            confirm="Are you sure you want to reject this expense?"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft" class="btn-secondary"
+                            invisible="status != 'rejected'"/>
+
+                    <!-- Status bar -->
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,pending,approved"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_approval_logs"
+                                type="object" icon="fa-history"
+                                invisible="approval_count == 0">
+                            <field name="approval_count" string="Approvals" widget="statinfo"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Policy violation banner -->
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not policy_violation">
+                        <strong>⚠️ Policy Violation:</strong>
+                        <field name="policy_warning" nolabel="1"/>
+                    </div>
+
+                    <group>
+                        <!-- LEFT: Employee & Company Info -->
+                        <group string="Employee Information">
+                            <field name="employee_id"/>
+                            <field name="company_id"/>
+                            <field name="expense_date"/>
+                            <field name="category"/>
+                        </group>
+
+                        <!-- RIGHT: Amount & Currency -->
+                        <group string="Amount Details">
+                            <field name="amount_original"/>
+                            <field name="currency_original"/>
+                            <field name="amount_converted"
+                                   invisible="currency_original == company_currency"/>
+                            <field name="company_currency"
+                                   invisible="currency_original == company_currency"/>
+                            <field name="exchange_rate"
+                                   invisible="currency_original == company_currency"/>
+                            <field name="current_approver_id"
+                                   invisible="status != 'pending'"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" placeholder="Describe the expense..."
+                               nolabel="1" colspan="2"/>
+                    </group>
+
+                    <!-- Receipt Upload -->
+                    <group string="Receipt">
+                        <field name="receipt" filename="receipt_filename" widget="binary"/>
+                        <field name="receipt_filename" invisible="1"/>
+                    </group>
+
+                    <notebook>
+                        <!-- Tab 1: Line Items -->
+                        <page string="Expense Line Items" name="lines">
+                            <field name="claim_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="total_price"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 2: OCR Data -->
+                        <page string="OCR Extraction" name="ocr_data"
+                              invisible="not ocr_vendor_name and not ocr_total">
+                            <group>
+                                <group string="Vendor">
+                                    <field name="ocr_vendor_name"/>
+                                    <field name="ocr_vendor_address"/>
+                                    <field name="ocr_vendor_gst"/>
+                                </group>
+                                <group string="Transaction">
+                                    <field name="ocr_date"/>
+                                    <field name="ocr_invoice_number"/>
+                                    <field name="ocr_payment_method"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Amounts">
+                                    <field name="ocr_subtotal"/>
+                                    <field name="ocr_tax"/>
+                                    <field name="ocr_total"/>
+                                </group>
+                                <group string="Quality">
+                                    <field name="ocr_confidence_score" widget="progressbar"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Tab 3: Approval History -->
+                        <page string="Approval History" name="approval_history">
+                            <field name="approval_log_ids" readonly="1">
+                                <list>
+                                    <field name="timestamp"/>
+                                    <field name="user_id"/>
+                                    <field name="action" decoration-success="action == 'approved'"
+                                           decoration-danger="action == 'rejected'"
+                                           decoration-info="action == 'submitted'"/>
+                                    <field name="step_sequence"/>
+                                    <field name="comment"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 4: Policy Info -->
+                        <page string="Policy Status" name="policy_status"
+                              invisible="not policy_violation">
+                            <group>
+                                <field name="policy_violation"/>
+                                <field name="policy_warning"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== TREE VIEW ==================== -->
+    <record id="expense_claim_view_tree" model="ir.ui.view">
+        <field name="name">expense.claim.tree</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <list string="Expense Claims"
+                  decoration-success="status == 'approved'"
+                  decoration-danger="status == 'rejected'"
+                  decoration-warning="status == 'pending'"
+                  decoration-muted="status == 'draft'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="expense_date"/>
+                <field name="category"/>
+                <field name="amount_original"/>
+                <field name="currency_original"/>
+                <field name="amount_converted"/>
+                <field name="company_currency"/>
+                <field name="current_approver_id"/>
+                <field name="status"
+                       decoration-success="status == 'approved'"
+                       decoration-danger="status == 'rejected'"
+                       decoration-warning="status == 'pending'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== KANBAN VIEW ==================== -->
+    <record id="expense_claim_view_kanban" model="ir.ui.view">
+        <field name="name">expense.claim.kanban</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="amount_original"/>
+                <field name="currency_original"/>
+                <field name="category"/>
+                <field name="status"/>
+                <field name="expense_date"/>
+                <field name="current_approver_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <div class="o_kanban_record_top mb-0">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <strong>
+                                    <field name="amount_original"/>
+                                    <field name="currency_original"/>
+                                </strong>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="employee_id" widget="many2one_avatar_user"/>
+                                    <span class="ms-1"><field name="expense_date"/></span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="category" widget="badge"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH VIEW ==================== -->
+    <record id="expense_claim_view_search" model="ir.ui.view">
+        <field name="name">expense.claim.search</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <search string="Search Expenses">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="category"/>
+                <field name="description"/>
+                <filter string="Draft" name="filter_draft"
+                        domain="[('status', '=', 'draft')]"/>
+                <filter string="Pending" name="filter_pending"
+                        domain="[('status', '=', 'pending')]"/>
+                <filter string="Approved" name="filter_approved"
+                        domain="[('status', '=', 'approved')]"/>
+                <filter string="Rejected" name="filter_rejected"
+                        domain="[('status', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="My Expenses" name="filter_mine"
+                        domain="[('employee_id', '=', uid)]"/>
+                <filter string="My Approvals" name="filter_my_approvals"
+                        domain="[('current_approver_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Date" name="filter_expense_date" date="expense_date"/>
+                <group>
+                    <filter string="Status" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Category" name="group_category"
+                            context="{'group_by': 'category'}"/>
+                    <filter string="Employee" name="group_employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter string="Month" name="group_month"
+                            context="{'group_by': 'expense_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTIONS ==================== -->
+
+    <!-- My Expenses (Employee view) -->
+    <record id="action_expense_claim_my" model="ir.actions.act_window">
+        <field name="name">My Expenses</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('employee_id', '=', uid)]</field>
+        <field name="context">{'search_default_filter_mine': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No expenses yet!
+            </p>
+            <p>
+                Click the "New" button to submit your first expense claim.
+            </p>
+        </field>
+    </record>
+
+    <!-- Submit New Expense -->
+    <record id="action_expense_claim_new" model="ir.actions.act_window">
+        <field name="name">Submit Expense</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- All Expenses (Admin) -->
+    <record id="action_expense_claim_all" model="ir.actions.act_window">
+        <field name="name">All Expenses</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+
+</odoo>

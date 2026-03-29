@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== PIVOT VIEW ==================== -->
+    <record id="expense_claim_view_pivot" model="ir.ui.view">
+        <field name="name">expense.claim.pivot</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <pivot string="Expense Analysis" display_quantity="true">
+                <field name="category" type="row"/>
+                <field name="employee_id" type="row"/>
+                <field name="expense_date" type="col" interval="month"/>
+                <field name="amount_original" type="measure"/>
+                <field name="amount_converted" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ==================== GRAPH VIEW ==================== -->
+    <record id="expense_claim_view_graph" model="ir.ui.view">
+        <field name="name">expense.claim.graph</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <graph string="Expense Analysis" type="bar" stacked="True">
+                <field name="category" type="row"/>
+                <field name="amount_original" type="measure"/>
+                <field name="amount_converted" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ==================== ANALYTICS ACTION ==================== -->
+    <record id="action_expense_analytics" model="ir.actions.act_window">
+        <field name="name">Expense Analytics</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="domain">[('status', 'in', ['approved', 'pending'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No expense data to analyze yet
+            </p>
+            <p>
+                Submit and approve expenses to see analytics here.
+                Use the pivot table and graph views to analyze spending patterns
+                by category, employee, and time period.
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================== MONTHLY TREND ACTION ==================== -->
+    <record id="action_expense_monthly_trend" model="ir.actions.act_window">
+        <field name="name">Monthly Expense Trend</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="domain">[('status', '=', 'approved')]</field>
+        <field name="context">{
+            'graph_mode': 'line',
+            'graph_groupbys': ['expense_date:month'],
+            'graph_measure': 'amount_converted',
+        }</field>
+    </record>
+
+</odoo>

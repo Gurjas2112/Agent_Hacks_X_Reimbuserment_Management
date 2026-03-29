@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== POLICY FORM VIEW ==================== -->
+    <record id="expense_policy_view_form" model="ir.ui.view">
+        <field name="name">expense.policy.form</field>
+        <field name="model">expense.policy</field>
+        <field name="arch" type="xml">
+            <form string="Expense Policy">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g., Meals Limit - ₹5,000"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Policy Scope">
+                            <field name="company_id"/>
+                            <field name="category"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Limits">
+                            <field name="max_amount"/>
+                            <field name="require_receipt"/>
+                            <field name="receipt_threshold"
+                                   invisible="not require_receipt"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" nolabel="1" colspan="2"
+                               placeholder="Describe this policy rule..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== POLICY TREE VIEW ==================== -->
+    <record id="expense_policy_view_tree" model="ir.ui.view">
+        <field name="name">expense.policy.tree</field>
+        <field name="model">expense.policy</field>
+        <field name="arch" type="xml">
+            <list string="Expense Policies">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="category"/>
+                <field name="max_amount"/>
+                <field name="require_receipt"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== POLICY SEARCH VIEW ==================== -->
+    <record id="expense_policy_view_search" model="ir.ui.view">
+        <field name="name">expense.policy.search</field>
+        <field name="model">expense.policy</field>
+        <field name="arch" type="xml">
+            <search string="Search Policies">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="category"/>
+                <filter string="Active" name="filter_active"
+                        domain="[('active', '=', True)]"/>
+                <filter string="Has Limit" name="filter_has_limit"
+                        domain="[('max_amount', '>', 0)]"/>
+                <group>
+                    <filter string="Company" name="group_company"
+                            context="{'group_by': 'company_id'}"/>
+                    <filter string="Category" name="group_category"
+                            context="{'group_by': 'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_expense_policy" model="ir.actions.act_window">
+        <field name="name">Expense Policies</field>
+        <field name="res_model">expense.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define expense limits and rules
+            </p>
+            <p>
+                Set per-category spending limits, receipt requirements,
+                and other policy rules for your company.
+            </p>
+        </field>
+    </record>
+
+</odoo>

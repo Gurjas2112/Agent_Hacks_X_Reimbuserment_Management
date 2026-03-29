@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Employee: can only see own expenses -->
+        <record id="expense_claim_rule_employee" model="ir.rule">
+            <field name="name">Expense Claim: Employee sees own</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="domain_force">[('employee_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_expense_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Manager: can see own expenses + team expenses (direct reports) + expenses pending their approval -->
+        <record id="expense_claim_rule_manager" model="ir.rule">
+            <field name="name">Expense Claim: Manager sees team</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="domain_force">['|', '|',
+                ('employee_id', '=', user.id),
+                ('employee_id.expense_manager_id', '=', user.id),
+                ('current_approver_id', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_expense_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Admin: can see all expenses (no domain restriction) -->
+        <record id="expense_claim_rule_admin" model="ir.rule">
+            <field name="name">Expense Claim: Admin sees all</field>
+            <field name="model_id" ref="model_expense_claim"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_expense_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Approval Log: Employee sees own expense logs -->
+        <record id="approval_log_rule_employee" model="ir.rule">
+            <field name="name">Approval Log: Employee sees own</field>
+            <field name="model_id" ref="model_approval_log"/>
+            <field name="domain_force">[('expense_id.employee_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_expense_employee'))]"/>
+        </record>
+
+        <!-- Approval Log: Admin sees all -->
+        <record id="approval_log_rule_admin" model="ir.rule">
+            <field name="name">Approval Log: Admin sees all</field>
+            <field name="model_id" ref="model_approval_log"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_expense_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>

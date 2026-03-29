@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== PENDING APPROVALS TREE ==================== -->
+    <record id="expense_claim_pending_tree" model="ir.ui.view">
+        <field name="name">expense.claim.pending.tree</field>
+        <field name="model">expense.claim</field>
+        <field name="arch" type="xml">
+            <list string="Pending Approvals"
+                  decoration-warning="status == 'pending'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="expense_date"/>
+                <field name="category"/>
+                <field name="amount_original"/>
+                <field name="currency_original"/>
+                <field name="amount_converted"/>
+                <field name="description"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'pending'"/>
+                <button name="action_approve" type="object"
+                        string="Approve" class="btn-success btn-sm"
+                        icon="fa-check"/>
+                <button name="action_reject" type="object"
+                        string="Reject" class="btn-danger btn-sm"
+                        icon="fa-times"
+                        confirm="Are you sure you want to reject this expense?"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== PENDING APPROVALS ACTION ==================== -->
+    <record id="action_expense_pending_approvals" model="ir.actions.act_window">
+        <field name="name">Pending Approvals</field>
+        <field name="res_model">expense.claim</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="expense_claim_pending_tree"/>
+        <field name="domain">[('current_approver_id', '=', uid), ('status', '=', 'pending')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No expenses pending your approval!
+            </p>
+            <p>
+                Expenses submitted by your team will appear here when they need your approval.
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================== APPROVAL LOG VIEWS ==================== -->
+    <record id="approval_log_view_tree" model="ir.ui.view">
+        <field name="name">approval.log.tree</field>
+        <field name="model">approval.log</field>
+        <field name="arch" type="xml">
+            <list string="Approval Audit Log" create="false" edit="false">
+                <field name="timestamp"/>
+                <field name="expense_id"/>
+                <field name="employee_name"/>
+                <field name="expense_amount"/>
+                <field name="user_id"/>
+                <field name="action"
+                       decoration-success="action == 'approved'"
+                       decoration-danger="action == 'rejected'"
+                       decoration-info="action == 'submitted'"
+                       widget="badge"/>
+                <field name="step_sequence"/>
+                <field name="comment"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_approval_log" model="ir.actions.act_window">
+        <field name="name">Approval Audit Log</field>
+        <field name="res_model">approval.log</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,56 @@
+{
+  "vendor": {
+    "name": "Taj Grand Hotel",
+    "gst_number": "",
+    "address": "12 Marine Drive, Mumbai 400020"
+  },
+  "transaction": {
+    "date": "2026-03-12",
+    "time": "",
+    "invoice_number": "TGH-2026-03892"
+  },
+  "amounts": {
+    "subtotal": 12800.00,
+    "tax": 2304.00,
+    "total": 15104.00,
+    "currency": "INR"
+  },
+  "line_items": [
+    {
+      "name": "Room Charge - Deluxe (2 nights)",
+      "quantity": 2,
+      "unit_price": 5500.00,
+      "total_price": 11000.00
+    },
+    {
+      "name": "Room Service - Breakfast",
+      "quantity": 1,
+      "unit_price": 850.00,
+      "total_price": 850.00
+    },
+    {
+      "name": "Laundry Service",
+      "quantity": 1,
+      "unit_price": 450.00,
+      "total_price": 450.00
+    },
+    {
+      "name": "Business Center",
+      "quantity": 1,
+      "unit_price": 200.00,
+      "total_price": 200.00
+    },
+    {
+      "name": "WiFi Premium",
+      "quantity": 1,
+      "unit_price": 300.00,
+      "total_price": 300.00
+    }
+  ],
+  "payment": {
+    "method": "Corporate Card",
+    "last4_digits": "8891"
+  },
+  "category": "accommodation",
+  "confidence_score": 92
+}

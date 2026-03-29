@@ -1,0 +1,56 @@
+{
+  "vendor": {
+    "name": "Staples Office Supplies",
+    "gst_number": "29AAHCS1234K1ZY",
+    "address": "78 Commercial Street, Bangalore 560001"
+  },
+  "transaction": {
+    "date": "2026-03-20",
+    "time": "",
+    "invoice_number": "SOS-88721"
+  },
+  "amounts": {
+    "subtotal": 2584.00,
+    "tax": 465.12,
+    "total": 3049.12,
+    "currency": "INR"
+  },
+  "line_items": [
+    {
+      "name": "HP Ink Cartridge 680",
+      "quantity": 1,
+      "unit_price": 899.00,
+      "total_price": 899.00
+    },
+    {
+      "name": "A4 Paper Ream (500 sheets)",
+      "quantity": 2,
+      "unit_price": 320.00,
+      "total_price": 640.00
+    },
+    {
+      "name": "Stapler Heavy Duty",
+      "quantity": 1,
+      "unit_price": 350.00,
+      "total_price": 350.00
+    },
+    {
+      "name": "Ball Pen Pack (10 pcs)",
+      "quantity": 3,
+      "unit_price": 90.00,
+      "total_price": 270.00
+    },
+    {
+      "name": "Whiteboard Markers Set",
+      "quantity": 1,
+      "unit_price": 425.00,
+      "total_price": 425.00
+    }
+  ],
+  "payment": {
+    "method": "UPI",
+    "last4_digits": ""
+  },
+  "category": "office_supplies",
+  "confidence_score": 93
+}

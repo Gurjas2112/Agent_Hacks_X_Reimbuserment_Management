@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== ROOT MENU ==================== -->
+    <menuitem id="menu_expense_root"
+              name="Expense Management"
+              web_icon="expense_management,static/description/icon.png"
+              sequence="25"/>
+
+    <!-- ==================== EMPLOYEE MENUS ==================== -->
+    <menuitem id="menu_expense_my"
+              name="My Expenses"
+              parent="menu_expense_root"
+              action="action_expense_claim_my"
+              sequence="10"/>
+
+    <menuitem id="menu_expense_submit"
+              name="Submit Expense"
+              parent="menu_expense_root"
+              action="action_expense_claim_new"
+              sequence="15"/>
+
+    <!-- ==================== MANAGER MENUS ==================== -->
+    <menuitem id="menu_expense_approvals"
+              name="Approvals"
+              parent="menu_expense_root"
+              groups="group_expense_manager"
+              sequence="20"/>
+
+    <menuitem id="menu_expense_pending"
+              name="Pending Approvals"
+              parent="menu_expense_approvals"
+              action="action_expense_pending_approvals"
+              sequence="10"/>
+
+    <!-- ==================== REPORTS ==================== -->
+    <menuitem id="menu_expense_reports"
+              name="Reports"
+              parent="menu_expense_root"
+              groups="group_expense_manager"
+              sequence="40"/>
+
+    <menuitem id="menu_expense_analytics"
+              name="Expense Analytics"
+              parent="menu_expense_reports"
+              action="action_expense_analytics"
+              sequence="5"/>
+
+    <menuitem id="menu_expense_monthly_trend"
+              name="Monthly Trend"
+              parent="menu_expense_reports"
+              action="action_expense_monthly_trend"
+              sequence="8"/>
+
+    <menuitem id="menu_expense_audit_log"
+              name="Approval Audit Log"
+              parent="menu_expense_reports"
+              action="action_approval_log"
+              sequence="10"/>
+
+    <menuitem id="menu_expense_all"
+              name="All Expenses"
+              parent="menu_expense_reports"
+              action="action_expense_claim_all"
+              groups="group_expense_admin"
+              sequence="20"/>
+
+    <!-- ==================== ADMIN / CONFIG MENUS ==================== -->
+    <menuitem id="menu_expense_config"
+              name="Configuration"
+              parent="menu_expense_root"
+              groups="group_expense_admin"
+              sequence="50"/>
+
+    <menuitem id="menu_expense_workflows"
+              name="Approval Workflows"
+              parent="menu_expense_config"
+              action="action_approval_workflow"
+              sequence="10"/>
+
+    <menuitem id="menu_expense_policies"
+              name="Expense Policies"
+              parent="menu_expense_config"
+              action="action_expense_policy"
+              sequence="15"/>
+
+    <menuitem id="menu_expense_companies"
+              name="Companies"
+              parent="menu_expense_config"
+              action="action_expense_company"
+              sequence="20"/>
+
+    <menuitem id="menu_expense_users"
+              name="Users &amp; Roles"
+              parent="menu_expense_config"
+              action="action_expense_users"
+              sequence="30"/>
+
+</odoo>

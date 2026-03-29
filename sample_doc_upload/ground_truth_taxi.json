@@ -1,0 +1,50 @@
+{
+  "vendor": {
+    "name": "BlueLine Cabs",
+    "gst_number": "",
+    "address": ""
+  },
+  "transaction": {
+    "date": "2026-03-18",
+    "time": "08:30",
+    "invoice_number": "BLC-20260318-4421"
+  },
+  "amounts": {
+    "subtotal": 372.50,
+    "tax": 18.63,
+    "total": 441.13,
+    "currency": "INR"
+  },
+  "line_items": [
+    {
+      "name": "Base Fare",
+      "quantity": 1,
+      "unit_price": 150.00,
+      "total_price": 150.00
+    },
+    {
+      "name": "Distance Charge (12.5 km)",
+      "quantity": 1,
+      "unit_price": 187.50,
+      "total_price": 187.50
+    },
+    {
+      "name": "Toll",
+      "quantity": 1,
+      "unit_price": 35.00,
+      "total_price": 35.00
+    },
+    {
+      "name": "Tip",
+      "quantity": 1,
+      "unit_price": 50.00,
+      "total_price": 50.00
+    }
+  ],
+  "payment": {
+    "method": "Cash",
+    "last4_digits": ""
+  },
+  "category": "transport",
+  "confidence_score": 88
+}

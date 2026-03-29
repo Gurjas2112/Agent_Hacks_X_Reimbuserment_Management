@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== WORKFLOW FORM VIEW ==================== -->
+    <record id="approval_workflow_view_form" model="ir.ui.view">
+        <field name="name">approval.workflow.form</field>
+        <field name="model">approval.workflow</field>
+        <field name="arch" type="xml">
+            <form string="Approval Workflow">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g., Standard 3-Level Approval"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Configuration">
+                            <field name="company_id"/>
+                            <field name="rule_type"/>
+                            <field name="is_manager_first"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Rule Parameters">
+                            <field name="percentage_threshold"
+                                   invisible="rule_type not in ('percentage', 'hybrid')"
+                                   widget="percentage"/>
+                            <field name="specific_approver_id"
+                                   invisible="rule_type not in ('specific_approver', 'hybrid')"/>
+                            <field name="description" placeholder="Describe this workflow..."/>
+                        </group>
+                    </group>
+
+                    <separator string="Approval Steps"/>
+                    <field name="step_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="approver_type"/>
+                            <field name="approver_ids" widget="many2many_tags"
+                                   invisible="approver_type != 'specific_user'"/>
+                            <field name="role_group_id"
+                                   invisible="approver_type != 'role_based'"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== WORKFLOW TREE VIEW ==================== -->
+    <record id="approval_workflow_view_tree" model="ir.ui.view">
+        <field name="name">approval.workflow.tree</field>
+        <field name="model">approval.workflow</field>
+        <field name="arch" type="xml">
+            <list string="Approval Workflows">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="rule_type"/>
+                <field name="is_manager_first"/>
+                <field name="step_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_approval_workflow" model="ir.actions.act_window">
+        <field name="name">Approval Workflows</field>
+        <field name="res_model">approval.workflow</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first approval workflow
+            </p>
+            <p>
+                Define multi-level approval rules: sequential, percentage-based,
+                specific approver, or hybrid combinations.
+            </p>
+        </field>
+    </record>
+
+</odoo>

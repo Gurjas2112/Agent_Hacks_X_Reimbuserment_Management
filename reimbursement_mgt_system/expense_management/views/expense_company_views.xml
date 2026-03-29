@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== COMPANY FORM VIEW ==================== -->
+    <record id="expense_company_view_form" model="ir.ui.view">
+        <field name="name">expense.company.form</field>
+        <field name="model">expense.company</field>
+        <field name="arch" type="xml">
+            <form string="Company">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Company Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Location &amp; Currency">
+                            <field name="country" placeholder="e.g., India"/>
+                            <field name="currency_code"/>
+                            <field name="currency_symbol"/>
+                        </group>
+                        <group string="Admin">
+                            <field name="admin_user_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <separator string="Employees"/>
+                    <field name="employee_ids"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== COMPANY TREE VIEW ==================== -->
+    <record id="expense_company_view_tree" model="ir.ui.view">
+        <field name="name">expense.company.tree</field>
+        <field name="model">expense.company</field>
+        <field name="arch" type="xml">
+            <list string="Companies">
+                <field name="name"/>
+                <field name="country"/>
+                <field name="currency_code"/>
+                <field name="admin_user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_expense_company" model="ir.actions.act_window">
+        <field name="name">Companies</field>
+        <field name="res_model">expense.company</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register your company
+            </p>
+            <p>
+                Create a company and select the country to auto-set the default currency.
+                Then add employees and managers.
+            </p>
+        </field>
+    </record>
+
+</odoo>
