@@ -1,6 +1,6 @@
 # 🏢 Reimbursement Management System — Odoo 19
 
-> **Odoo × VIT Pune Hackathon 2026 — Round 1**
+> **[Odoo × VIT Pune Hackathon 2026](https://hackathon.odoo.com/event/odoo-x-vit-pune-hackathon-26-18/register) — Round 1**
 > A production-ready, configurable expense reimbursement module for Odoo 19 with rule-based multi-level approval workflows, **DocStrange OCR receipt scanning**, and real-time multi-currency conversion.
 
 ---
@@ -544,7 +544,14 @@ Pre-loaded in `sample_doc_upload/` with ground truth JSON:
 
 ## 👥 Team
 
-**Team: Agent Hacks** — Odoo × VIT Pune Hackathon 2026
+**Team: Agent Hacks** — [Odoo × VIT Pune Hackathon 2026](https://hackathon.odoo.com/event/odoo-x-vit-pune-hackathon-26-18/register)
+
+| Photo | Name | Role | GitHub |
+| :---: | --- | --- | --- |
+| <img src="team_member_details/team_member_1.jpg" width="100" style="border-radius: 50%;"> | **Gurjas Singh Gandhi** | Team Leader | [Gurjas2112](https://github.com/Gurjas2112) |
+| <img src="team_member_details/team_member_2.jpeg" width="100" style="border-radius: 50%;"> | **Joy Kujur** | Developer | [joyboy-pega](https://github.com/joyboy-pega) |
+| <img src="team_member_details/team_member_4.jpeg" width="100" style="border-radius: 50%;"> | **Sarvesh Varode** | Developer | [sarveshvarode092704](https://github.com/sarveshvarode092704) |
+| <img src="team_member_details/team_member_3.jpeg" width="100" style="border-radius: 50%;"> | **Prathamesh Nibandhe** | Developer | [prathamesh-coding](https://github.com/prathamesh-coding) |
 
 ---
 
